@@ -1,91 +1,131 @@
-Este projeto representa o banco de dados de uma concessionária Yamaha focada na venda de peças, incluindo controle de vendedores, clientes, produtos, pedidos e pagamentos.
-O objetivo é demonstrar o modelo lógico e físico desenvolvido para atender o cenário definido no minimundo.
+# Sistema de Gestão de Peças – Concessionária Yamaha
 
-🏪 Minimundo
+## Descrição do Projeto
+Este repositório contém os scripts SQL desenvolvidos para o projeto da disciplina **“Criação e Manipulação de Dados com SQL em Projeto Real”**.  
+O sistema representa a rotina de uma concessionária Yamaha que trabalha com venda de peças, cadastro de clientes, fornecedores, controle de estoque e registro de vendas.
 
-A Concessionária Yamaha “MotoPeças SBC” realiza venda de peças originais Yamaha.
-O negócio funciona da seguinte forma:
+O projeto inclui todos os scripts exigidos pela atividade:  
+- Criação das tabelas (DER completo)  
+- Inserção de dados reais  
+- Consultas SELECT com filtros e JOINs  
+- Comandos UPDATE  
+- Comandos DELETE  
+- README documentado  
+- Estrutura organizada em repositório público
 
-A loja possui vendedores, cada um com nome, telefone e um código identificador.
+---
 
-Os vendedores atendem clientes, que podem comprar várias peças.
+## Minimundo
+A concessionária vende peças originais Yamaha e precisa registrar:
 
-As peças ficam cadastradas com nome, código, categoria, quantidade em estoque e preço.
+- Peças, seus preços e controle de estoque.  
+- Fornecedores responsáveis pelas entregas.  
+- Entradas de estoque de cada peça.  
+- Clientes.  
+- Vendas realizadas.  
+- Itens que compõem cada venda, relacionando peça, quantidade e valor unitário.
 
-Cada venda gera um pedido, contendo:
+Todas as regras de relacionamento seguem o DER fornecido.
 
-Cliente
+---
 
-Vendedor responsável
+## DER – Entidades e Atributos
 
-Data do pedido
+### **1. PEÇA**
+- codigo_peca (PK)  
+- nome  
+- descricao  
+- preco_venda  
+- preco_custo  
+- estoque_atual  
+- estoque_minimo
 
-Valor total
+### **2. FORNECEDOR**
+- id_fornecedor (PK)  
+- nome  
+- cnpj  
+- telefone  
+- email
 
-Um pedido pode ter várias peças, e uma peça pode estar em vários pedidos → relação muitos-para-muitos.
+### **3. CLIENTE**
+- id_cliente (PK)  
+- nome  
+- cpf  
+- telefone
 
-Cada pedido é associado a um pagamento, que pode ter forma de pagamento (crédito, débito, pix), valor e status.
+### **4. VENDA**
+- id_venda (PK)  
+- data_venda  
+- valor_total  
+- id_cliente (FK → CLIENTE)
 
-Esse banco de dados organiza todas essas informações para facilitar consultas, relatórios e operações da loja.
+### **5. ITEMVENDA**
+- id_item (PK)  
+- id_venda (FK → VENDA)  
+- codigo_peca (FK → PEÇA)  
+- quantidade  
+- valor_unitario
 
-🧩 Entidades criadas
+### **6. ENTRADA_ESTOQUE**
+- id_entrada (PK)  
+- codigo_peca (FK → PEÇA)  
+- id_fornecedor (FK → FORNECEDOR)  
+- quantidade  
+- data_entrada  
+- numero_nota_fiscal
 
-As tabelas principais do sistema são:
+---
 
-Funcionarios – vendedores da loja
+## Relacionamentos
+- **Fornecedor 1:N Entrada_Estoque**  
+- **Peça 1:N Entrada_Estoque**  
+- **Cliente 1:N Venda**  
+- **Venda 1:N ItemVenda**  
+- **Peça 1:N ItemVenda**
 
-Clientes
+O modelo está normalizado (1FN, 2FN e 3FN).
 
-Produtos – peças Yamaha
+---
 
-Pedidos
+## Estrutura do Repositório
+O repositório contém:
 
-ItensPedido – peças dentro dos pedidos
+- `create_tables.sql` → criação de todas as tabelas e FKs  
+- `insert_data.sql` → povoamento inicial do banco  
+- `select_queries.sql` → consultas SELECT usando JOIN, WHERE, ORDER BY, LIMIT  
+- `update_delete.sql` → comandos UPDATE e DELETE com condições  
+- `README.md` → documentação do projeto
 
-Pagamentos
+Todos os scripts atendem às exigências da atividade.
 
-🛠️ Tecnologias Utilizadas
+---
 
-SQL (MySQL / MariaDB / SQLite – compatível com ambientes online como W3Schools e DB-Fiddle)
+## Como Executar (MySQL Workbench recomendado)
 
-Diagramação baseada em DER tradicional
+1. Abra o MySQL Workbench.  
+2. Execute o script `create_tables.sql` para criar o banco e todas as tabelas.  
+3. Execute o arquivo `insert_data.sql` para inserir dados nas tabelas.  
+4. Execute o arquivo `select_queries.sql` para testar as consultas.  
+5. Execute `update_delete.sql` para testar atualizações e exclusões.  
 
-GitHub para versionamento e documentação
+A ordem correta de execução é:  
+**1) create_tables → 2) insert_data → 3) select_queries → 4) update_delete**
 
-📊 Modelo Lógico
+---
 
-O modelo lógico contém:
+## Checklist de Entrega (Exigências da Atividade)
+- [x] Repositório público no GitHub  
+- [x] Scripts SQL organizados  
+- [x] Script com INSERTs  
+- [x] Script com SELECTs (JOIN, WHERE, ORDER BY, LIMIT)  
+- [x] ≥ 3 comandos UPDATE com condições  
+- [x] ≥ 3 comandos DELETE com condições  
+- [x] Documentação README completa  
 
-Entidades
+Tudo está contemplado no repositório.
 
-Atributos
+---
 
-Relacionamentos
+## Autor
 
-Chaves primárias (PK) e estrangeiras (FK)
-
-Cardinalidades
-
-🗄️ Modelo Físico (DDL)
-
-O modelo físico inclui os comandos CREATE TABLE de todas as tabelas, chaves e relacionamentos.
-
-(Os comandos completos estão nos arquivos SQL do projeto.)
-
-🎯 Objetivo do Projeto
-
-Organizar os dados da concessionária Yamaha de forma estruturada, permitindo:
-
-controle de estoque
-
-registro de vendas
-
-rastreamento dos vendedores
-
-histórico de compras dos clientes
-
-conferência de pagamentos
-
-👨‍🔧 Autor
-
-Projeto desenvolvido por Johnny, aluno de ADS na Cruzeiro do Sul EAD.
+Projeto desenvolvido por Johnny, aluno de ADS na Cruzeiro do Sul EAD para avaliação acadêmica.
